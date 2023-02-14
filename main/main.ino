@@ -1,10 +1,10 @@
 #include "maglev.h"
 
-const int BREAKBEAM_PIN = 53;
+const int BREAKBEAM_PIN = 9;
 //const int[] ELECTROMAGNETS = int[]{5, 6, 7};
 //const int[] BREAKBEAMS = int[]{10, 11, 12};
 
-const int ELECTROMAGNET_PIN = 42;
+const int ELECTROMAGNET_PIN = 8;
 
 void setup() {
   // Setting up breakbeam sensors
@@ -22,14 +22,23 @@ void setup() {
   // }
 
   pinMode(ELECTROMAGNET_PIN, OUTPUT);
+  pinMode(BREAKBEAM_PIN, INPUT);
+  // Turn on built-in pull-up resistor
+  pinMode(BREAKBEAM_PIN, HIGH);
 
   Serial.begin(9600);
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-  //Serial.println(digitalRead(BREAKBEAM_PIN));
-  //delay(500);
+  // If beam is intact, turn on electromagnet
+  if (digitalRead(BREAKBEAM_PIN) == LOW) {
+    digitalWrite(ELECTROMAGNET_PIN, HIGH);
+  }
+  else {
+    digitalWrite(ELECTROMAGNET_PIN, LOW);
+  }
 
-  digitalWrite(ELECTROMAGNET_PIN, HIGH);
+  Serial.println(digitalRead(BREAKBEAM_PIN));
+  delay(200);
+  
 }
