@@ -1,45 +1,35 @@
 #include "maglev.h"
 
-const int BREAKBEAM_PIN = 9;
-//const int[] ELECTROMAGNETS = int[]{5, 6, 7};
-//const int[] BREAKBEAMS = int[]{10, 11, 12};
-
-const int ELECTROMAGNET1 = 8;
-const int ELECTROMAGNET2 = 7;
+// First electromagnet is the start electromagnet
+const int LEFT_ELECTROMAGNETS[] = {23, 25, 27, 29, 31, 33};
+const int RIGHT_ELECTROMAGNETS[] = {38, 36, 34, 32, 30, 28};
+// Each breakbeam is before its corresponding electromagnet on the track
+// First breakbeam is the start breakbeam
+const int BREAKBEAMS[] = {39, 41, 43, 45, 47, 49};
 
 void setup() {
+  Serial.begin(9600);
   // Setting up breakbeam sensors
-  // for (int i = 0; i < sizeof(BREAKBEAMS) / sizeof(int); i++) {
-  //   // Set breakbeam pin as input
-  //   pinMode(BREAKBEAMS[i], INPUT);
-  //   // Turn on built-in pull-up resistor for breakbeam
-  //   digitalWrite(BREAKBEAMS[i], HIGH);
-  // }
+  for (int i = 0; i < 6; i++) {
+    // Set breakbeam pin as input
+    pinMode(BREAKBEAMS[i], INPUT);
+    // Turn on built-in pull-up resistor for breakbeam
+    digitalWrite(BREAKBEAMS[i], HIGH);
+  }
 
   // Setting up electromagnets
-  // for (int i = 0; i < sizeof(ELECTROMAGNETS) / sizeof(int), i++) {
-  //   // Set electromagnet pin as output
-  //   pinMode(ELECTROMAGNETS[i], OUTPUT);
-  // }
+  for (int i = 0; i < 6; i++) {
+    // Set electromagnet pin as output
+    pinMode(LEFT_ELECTROMAGNETS[i], OUTPUT);
+    pinMode(RIGHT_ELECTROMAGNETS[i], OUTPUT);
+    // To stop current flow, raise mosfet to 5v
+    digitalWrite(LEFT_ELECTROMAGNETS[i], HIGH);
+    digitalWrite(RIGHT_ELECTROMAGNETS[i], HIGH);
+  }
 
-  pinMode(ELECTROMAGNET1, OUTPUT);
-  pinMode(ELECTROMAGNET2, OUTPUT);
-  pinMode(BREAKBEAM_PIN, INPUT_PULLUP);
-  // Turn on built-in pull-up resistor
-  //digitalWrite(BREAKBEAM_PIN, HIGH);
-
-  Serial.begin(9600);
+  Serial.println("Setup completed");
 }
 
 void loop() {
-  // If beam is intact, turn on electromagnet
-  // if (digitalRead(BREAKBEAM_PIN) == LOW) {
-  //   digitalWrite(ELECTROMAGNET_PIN, HIGH);
-  // }
-  // else {
-  //   digitalWrite(ELECTROMAGNET_PIN, LOW);
-  // }
-
-  Serial.println(digitalRead(BREAKBEAM_PIN));
-  delay(500);
+  accelerate(BREAKBEAMS, LEFT_ELECTROMAGNETS, RIGHT_ELECTROMAGNETS);
 }
